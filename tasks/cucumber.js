@@ -7,14 +7,13 @@ module.exports = function(grunt) {
     if (!filter) {
       grunt.task.run('cucumberjs:all');
     } else {
-      grunt.log.verbose("running cucumber js for "+(filter ? 'features: "'+filter+'"' : 'all features'));
+      grunt.log.debug("running cucumber js for "+(filter ? 'features: "'+filter+'"' : 'all features'));
       var search = 'features/**/'+filter+'*.feature';
       var files = grunt.file.expand(search);
 
       if (files.length === 0) {
         grunt.log.writeln('search: '+search);
-        grunt.log.error('no features found for filter: '+filter);
-        return 1;
+        return grunt.fail.warn('no features found for filter: '+filter);
       }
 
       var config = grunt.config.get('cucumberjs.features');
