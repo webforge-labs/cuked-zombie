@@ -2,6 +2,7 @@
 module.exports = function(grunt) {
 
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+  grunt.loadTasks('tasks');
 
   grunt.initConfig({
     jshint: {
@@ -14,6 +15,7 @@ module.exports = function(grunt) {
     },
 
     cucumberjs: {
+      // config for all features when called with: `grunt cucumber`
       all: {
         src: 'features',
         options: {
@@ -22,6 +24,7 @@ module.exports = function(grunt) {
         }
       },
 
+      // config for single features when called with `grunt --filter some-feature`
       features: {
         src: 'features',
         options: {
@@ -29,10 +32,20 @@ module.exports = function(grunt) {
           format: "pretty"
         }
       }
+    },
+
+    simplemocha: {
+      options: {
+        timeout: 3000,
+        ignoreLeaks: false,
+        ui: 'bdd',
+        reporter: 'spec'
+      },
+
+      all: { src: ['tests/js/**/*Test.js'] },
     }
+
   });
 
-  grunt.loadTasks('src/js/tasks');
-
-  grunt.registerTask('test', ['jshint', 'cucumber']);
+  grunt.registerTask('test', ['jshint', 'simplemocha:all', 'cucumber']);
 };
