@@ -1,0 +1,20 @@
+{
+  "name": "my-blog",
+  "version": "1.0.0",
+  "description": "inner project for acceptance tests of cuked-zombie: my-blog",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "cuked-zombie": "*",
+    "matchdep": "~0.3.0",
+    "grunt-cucumber": "~0.2.3"
+  },
+  "public": false,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT"
+}
