@@ -1,0 +1,2 @@
+  - chai exceptions (and other) will be automatically converted to cucumber failures
+  - zombie is tightly integrated
