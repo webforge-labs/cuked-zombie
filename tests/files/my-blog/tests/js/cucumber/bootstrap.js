@@ -2,7 +2,7 @@
 module.exports = function() {
   var cucumberStep = this;
   var path = require('path');
-  var os = require('os'), hostn = os.hostname();
+  var os = require('os');
   var chai = require('chai');
   chai.config.includeStack = true;
 
@@ -13,12 +13,13 @@ module.exports = function() {
   var infected = cukedZombie.infect(cucumberStep, {
     world: {
       cli: path.join(__dirname, '..', '..', '..', 'bin', 'cli.' +(os.platform() === 'win32' ? 'bat' : 'sh')),
-      domains: {
+      domains: (function() {
+        var domains = {};
         // fake for running on travis:
-        hostn: 'staging.my-blog.com',
-        'psc-laptop': 'my-blog.laptop.ps-webforge.net',
-        'psc-desktop': 'my-blog.desktop.ps-webforge.net',
-      },
+        domains[os.hostname()] = 'staging-my-blog.com';
+
+        return domains;
+      })(),
       cookies: [{
         name: 'staging_access',
         value: 'tokenU1V2pUK'
