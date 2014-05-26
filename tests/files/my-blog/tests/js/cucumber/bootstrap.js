@@ -2,7 +2,7 @@
 module.exports = function() {
   var cucumberStep = this;
   var path = require('path');
-  var os = require('os');
+  var os = require('os'), hostn = os.hostname();
   var chai = require('chai');
   chai.config.includeStack = true;
 
@@ -14,10 +14,10 @@ module.exports = function() {
     world: {
       cli: path.join(__dirname, '..', '..', '..', 'bin', 'cli.' +(os.platform() === 'win32' ? 'bat' : 'sh')),
       domains: {
-        'pegasus.ps-webforge.net': 'ssc-testing.ps-webforge.com',
-        'psc-laptop': 'ssc.laptop.ps-webforge.net',
-        'psc-desktop': 'ssc.desktop.ps-webforge.net',
-        'addorange-macbook': 'ssc.dev.192.168.2.222.xip.io'    
+        // fake for running on travis:
+        hostn: 'staging.my-blog.com',
+        'psc-laptop': 'my-blog.laptop.ps-webforge.net',
+        'psc-desktop': 'my-blog.desktop.ps-webforge.net',
       },
       cookies: [{
         name: 'staging_access',
