@@ -17,7 +17,7 @@ module.exports = function(options) {
   }
 
   if (!options.domain) {
-    throw new Error('you have to provide a (base-)domain for the world. No key in domains found for: '+options.hostname);
+    throw new Error('you have to provide a (base-)domain for the world. No key "'+options.hostname+'" found for a domain in '+require('stringify-object')(options.domains, { indent: '  '}));
   }
 
   return function World(callback) {

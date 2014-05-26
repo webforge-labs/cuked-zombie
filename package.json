@@ -11,7 +11,8 @@
     "lodash": "~2.4.1",
     "chai": "~1.9.1",
     "zombie": "~2.0.0-alpha31",
-    "css-tester": "0.0.8"
+    "css-tester": "0.0.8",
+    "stringify-object": "~0.2.1"
   },
   "devDependencies": {
     "matchdep": "~0.3.0",
