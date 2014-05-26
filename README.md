@@ -15,6 +15,7 @@ cuked-zombie bridges the small gap between this libraries. It provides an api to
   - you can pass arguments to your infected step definitions
   - a bunch of tools that extend the behaviour of zombie (visiting Pages, sending Cookies, using jQuery from the tested site, etc)
   - an easy integration with [CSSTester](https://github.com/webforge-labs/css-tester)
+  - the stack trace from assertions is shortened
 
 other features:
 

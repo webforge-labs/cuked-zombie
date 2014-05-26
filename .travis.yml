@@ -9,7 +9,9 @@ branches:
 
 before_script:
   - npm install -g grunt-cli
-  - grunt --version
+  - npm link
+  - 'cd tests/files/my-blog && npm link cuked-zombie && npm install'
+
 
 notifications:
   hipchat: 1fbdbbbaa517c485f935a6d72f1110@239240
