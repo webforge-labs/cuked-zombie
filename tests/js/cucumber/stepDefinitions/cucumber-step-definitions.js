@@ -46,8 +46,8 @@ module.exports = function(expect, commons) {
       expect(error, "grunt cucumber produces an error:\n"+stdout+stderr).to.be.null;
 
       env.cucumberRun = {
-        stdout: stdout.replace(/\033\[[0-9;]*m/g, ''), // strip ansi until cucumber has a --no-color switch
-        stderr: stderr
+        stderr: stderr,
+        stdout: stdout.replace(/\033\[[0-9;]*m/g, '') // strip ansi until cucumber has a --no-color switch
       };
     });
 
@@ -66,7 +66,7 @@ module.exports = function(expect, commons) {
 
   this.Then(/^all cucumber tests are passed$/, function(callback) {
     console.log(this.env.cucumberRun.stdout);
-    expect(this).to.have.deep.property('env.cucumberRun.stdout').to.contain('passedl');
+    expect(this).to.have.deep.property('env.cucumberRun.stdout').to.contain('6 steps (6 passed)').and.to.contain('1 scenario (1 passed)');
     callback();
   });
 };
