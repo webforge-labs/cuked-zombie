@@ -13,13 +13,7 @@ module.exports = function() {
   var infected = cukedZombie.infect(cucumberStep, {
     world: {
       cli: path.join(__dirname, '..', '..', '..', 'bin', 'cli.' +(os.platform() === 'win32' ? 'bat' : 'sh')),
-      domains: (function() {
-        var domains = {};
-        // fake for running on travis:
-        domains[os.hostname()] = 'staging-my-blog.com';
-
-        return domains;
-      })(),
+      domain: 'staging-my-blog.com', // hardcode this for travis-ci
       cookies: [{
         name: 'staging_access',
         value: 'tokenU1V2pUK'
