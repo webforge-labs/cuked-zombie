@@ -158,20 +158,30 @@ module.exports = function(options) {
       expect(JSON.parse(lastRequest.data), 'lastAjaxRequest.data').to.be.eql(exp.data);
     };
 
-    this.executeDQL = function(dql, parameters, callback) {
+    this.executeDQL = function(dql, parameters, callback, cucumberCallback) {
       execFile(options.cli, ["db:dql", dql, JSON.stringify(parameters)], function(error, stdout, stderr) {
         if (error) {
-          that.debug.log(stderr, stdout);
-          throw error;
+          console.log(stderr, stdout);
+          expect(error).to.be.undefined;
         }
 
         var result = JSON.parse(stdout);
 
-        callback.call(that, result);
+        if (cucumberCallback) {
+          try {
+            callback.call(that, result);
+
+            cucumberCallback();
+          } catch (exc) {
+            cucumberCallback.fail(exc);
+          }
+        } else {
+          callback.call(that, result);
+        }
       });
     };
 
-    this.retrieveMailSpool = function(callback) {
+    this.retrieveMailSpool = function(callback, cucumberCallback) {
       execFile(options.cli, ["mail:spool"], function(error, stdout, stderr) {
         if (error) {
           that.debug.log(stderr, stdout);
@@ -180,7 +190,18 @@ module.exports = function(options) {
 
         var result = JSON.parse(stdout);
 
-        callback.call(that, result);
+
+        if (cucumberCallback) {
+          try {
+            callback.call(that, result);
+
+            cucumberCallback();
+          } catch (exc) {
+            cucumberCallback.fail(exc);
+          }
+        } else {
+          callback.call(that, result);
+        }
       });
     };
 
