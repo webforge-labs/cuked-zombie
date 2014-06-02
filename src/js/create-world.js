@@ -9,7 +9,8 @@ module.exports = function(options) {
 
   options = _.defaults(options, {
     hostname: os.hostname(),
-    domains: {}
+    domains: {},
+    debug: false
   });
 
   if (!options.domain && options.domains[options.hostname]) {
@@ -31,7 +32,7 @@ module.exports = function(options) {
 
     this.browser = new Browser({
       site: 'http://'+options.domain,
-      debug: false,
+      debug: options.debug,
       headers: {
         'X-Environment-In-Tests': 'from-zombie'
       },
@@ -45,7 +46,7 @@ module.exports = function(options) {
     this.debug = {};
     this.debug.log = function() {
       /* globals console */
-      console.log.apply(arguments);
+      (console.log).apply(this, arguments);
     };
 
     this.css = function(selector) {
@@ -77,13 +78,21 @@ module.exports = function(options) {
     };
 
     this.waitForjQuery = function(callback) {
+      if (!that.browser.window) {
+        throw new Error('cannot wait for jQuery, that.browser.window is not defined. Did you forget to visit a page before waiting for jQuery?');
+      }
+
       that.browser.wait(
         function() {
           return that.browser.window.jQuery !== undefined;
         },
         function() {
+          if (!that.browser.window) {
+            throw new Error('cannot wait for jQuery, that.browser.window is not defined (after waiting)');
+          }
+
           if (!that.browser.window.jQuery) {
-            throw new Error('timedout while waiting for jQuery');
+            throw new Error('timed out while waiting for jQuery');
           }
 
           that.registerjQuery();
@@ -221,6 +230,29 @@ module.exports = function(options) {
         if (error) {
           that.debug.log(stderr, stdout);
           throw error;
+        }
+
+        callback.call(that);
+      });
+    };
+
+    this.loadFixtureParts = function(partsText, callback) {
+      if (options.debug) {
+        that.debug.log('loading fixture-parts:');
+        that.debug.log(partsText);
+      }
+
+      partsText = partsText.replace(/\r?\n/g, '_');
+
+      execFile(options.cli, ["db:fixture-parts", partsText, '--divider=_'], function(error, stdout, stderr) {
+        if (error) {
+          that.debug.log(stderr, stdout);
+          throw error;
+        }
+
+        if (options.debug) {
+          that.debug.log('fixture parts debug:');
+          that.debug.log(stdout);
         }
 
         callback.call(that);
