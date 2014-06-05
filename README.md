@@ -24,6 +24,8 @@ other features:
 
 ## installation
 
+[![NPM](https://nodei.co/npm/cuked-zombie.png)](https://www.npmjs.org/package/cuked-zombie)
+
 ```
 npm install cuked-zombie
 ```
