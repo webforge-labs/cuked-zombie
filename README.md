@@ -22,6 +22,18 @@ other features:
   - a grunt task to run all or just single cucumber steps
   - some convenient functions to manage different hosts your testing on
 
+## installation
+
+```
+npm install cuked-zombie
+```
+(this will install Zombie as well)
+
+```
+npm install grunt-cucumber
+```
+(this will install cucumber-js as well)
+
 ## Usage
 
 To use cucumber with zombie you need to infect your step definitions and create an infected world (a world that knows how to invoke zombie(s)).
