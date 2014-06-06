@@ -118,7 +118,7 @@ module.exports = function(options) {
 
     this.koContext = function($element) {
       var ko = that.browser.window.require('knockout');
-      var context = ko.contextFor($element.get(0));
+      var context = ko.contextFor($element.jquery ? $element.get(0) : $element);
 
       expect(context, 'context from element: '+$element).to.be.ok;
 
