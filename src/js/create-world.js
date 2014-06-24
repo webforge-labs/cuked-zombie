@@ -178,14 +178,14 @@ module.exports = function(options) {
 
         if (cucumberCallback) {
           try {
-            callback.call(that, result);
+            callback.call(that, result, dql);
 
             cucumberCallback();
           } catch (exc) {
             cucumberCallback.fail(exc);
           }
         } else {
-          callback.call(that, result);
+          callback.call(that, result, dql);
         }
       });
     };
