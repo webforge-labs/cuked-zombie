@@ -51,7 +51,7 @@ module.exports = function(options) {
 
     this.css = function(selector) {
       if (!that.browser.window.jQuery) {
-        throw new Error('cannot css() because jQuery is not defined');
+        throw new Error('cannot css() because jQuery is not defined. Maybe you used this.css and forgot withCSS parameter after callback?');
       }
 
       return new CSSTest(that.browser.window.jQuery, selector);
