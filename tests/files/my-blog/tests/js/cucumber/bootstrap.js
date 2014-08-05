@@ -8,7 +8,7 @@ module.exports = function() {
 
   var cukedZombie = require('cuked-zombie');
 
-  var stepCommons = {};
+  var stepCommons = {};_
 
   var infected = cukedZombie.infect(cucumberStep, {
     world: {

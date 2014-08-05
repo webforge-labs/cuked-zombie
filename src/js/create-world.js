@@ -10,7 +10,8 @@ module.exports = function(options) {
   options = _.defaults(options, {
     hostname: os.hostname(),
     domains: {},
-    debug: false
+    debug: false,
+    browser: {}
   });
 
   if (!options.domain && options.domains[options.hostname]) {
@@ -27,27 +28,33 @@ module.exports = function(options) {
     this.util = require('./zombie-utils')(that);
 
     if (this.init) {
-      this.init.call(this);
+      this.init.call(this, Browser);
     }
-
-    this.browser = new Browser({
-      site: 'http://'+options.domain,
-      debug: options.debug,
-      headers: {
-        'X-Environment-In-Tests': 'from-zombie'
-      },
-      maxWait: 7
-    });
-
-    _.each(options.cookies || {}, function(cookie) {
-      that.browser.cookies.set(_.defaults(cookie, { domain: options.domain}));
-    });
 
     this.debug = {};
     this.debug.log = function() {
       /* globals console */
       (console.log).apply(this, arguments);
     };
+
+    var browserOptions = _.defaults(options.browser, {
+      site: 'http://'+options.domain,
+      debug: options.debug,
+      headers: {
+        'X-Environment-In-Tests': 'from-zombie'
+      },
+      waitDuration: 7
+    });
+
+    if (options.debug) {
+      that.debug.log('browserOptions:', browserOptions);
+    }
+
+    this.browser = new Browser(browserOptions);
+
+    _.each(options.cookies || {}, function(cookie) {
+      that.browser.cookies.set(_.defaults(cookie, { domain: options.domain}));
+    });
 
     this.css = function(selector) {
       if (!that.browser.window.jQuery) {
@@ -256,6 +263,22 @@ module.exports = function(options) {
         }
 
         callback.call(that);
+      });
+    };
+
+    this.cli = function(parameters, callback) {
+      if (options.debug) {
+        that.debug.log('call cli command');
+        that.debug.log(parameters);
+      }
+
+      execFile(options.cli, parameters, function(error, stdout, stderr) {
+        if (error) {
+          that.debug.log(stderr, stdout);
+          throw error;
+        }
+
+        callback.call(that, stdout, stderr);
       });
     };
 
