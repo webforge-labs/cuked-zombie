@@ -43,7 +43,7 @@ module.exports = function(options) {
       headers: {
         'X-Environment-In-Tests': 'from-zombie'
       },
-      waitDuration: 7
+      maxWait: 7
     });
 
     if (options.debug) {
