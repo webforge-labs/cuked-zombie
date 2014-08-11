@@ -1,6 +1,6 @@
 {
   "name": "cuked-zombie",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "use cucumber and acceptance tests with zombie",
   "main": "index.js",
   "directories": {
