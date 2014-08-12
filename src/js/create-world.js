@@ -175,7 +175,11 @@ module.exports = function(options) {
     };
 
     this.executeDQL = function(dql, parameters, callback, cucumberCallback) {
-      execFile(options.cli, ["db:dql", dql, JSON.stringify(parameters)], function(error, stdout, stderr) {
+      /* globals Buffer */
+      var jsonParameters = JSON.stringify(parameters);
+      var encodedParameters = new Buffer(jsonParameters).toString('base64');
+
+      execFile(options.cli, ["db:dql", "--base64", dql, encodedParameters], function(error, stdout, stderr) {
         if (error) {
           console.log(stderr, stdout);
           expect(error).to.be.undefined;
