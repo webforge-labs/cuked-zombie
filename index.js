@@ -3,6 +3,8 @@ var createWorld = require("./src/js/create-world");
 
 var that = {
 
+  Zombie: require('zombie'),
+
   infect: function(cucumberStep, options) {
     var infected = {};
 
