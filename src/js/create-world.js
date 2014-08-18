@@ -25,6 +25,11 @@ module.exports = function(options) {
   return function World(callback) {
     var that = this;
 
+    this.cucumberCallback = undefined;
+    this.setStepCallback = function(cucumberCallback) {
+      that.cucumberCallback = cucumberCallback;
+    };
+
     this.util = require('./zombie-utils')(that);
 
     if (this.init) {
@@ -52,6 +57,12 @@ module.exports = function(options) {
 
     this.browser = new Browser(browserOptions);
 
+    this.browser.on("opened", function(window) {
+      // make Raphael run in zombie without quitting silently
+      window.SVGAngle = {};
+      window.window.SVGAngle = {};
+    });
+    
     _.each(options.cookies || {}, function(cookie) {
       that.browser.cookies.set(_.defaults(cookie, { domain: options.domain}));
     });
@@ -64,7 +75,7 @@ module.exports = function(options) {
       return new CSSTest(that.browser.window.jQuery, selector);
     };
 
-    this.visit = function(url, callback) {
+    this.visit = function(url, callback, cucumberCallback) {
       that.browser.visit(url, function(error) {
         /*
         if (error && error.filename === 'http://www.youtube.com/embed/tW2WGr--jy4:script') {
@@ -77,7 +88,13 @@ module.exports = function(options) {
         } else
         */
         if (error) {
-          throw error;
+          if (cucumberCallback) {
+            cucumberCallback.fail(error);
+          } else if (that.cucumberCallback) {
+            that.cucumberCallback.fail(error);
+          } else {
+            throw error;
+          }
         } else {
           callback.call(that, that.browser);
         }
@@ -148,12 +165,12 @@ module.exports = function(options) {
       }
     };
 
-    this.visitPage = function(path, callback) {
+    this.visitPage = function(path, callback, cucumberCallback) {
       return that.visit(path, function() {
         that.pageHasChanged(function() {
           callback.call(that, that.browser);
         });
-      });
+      }, cucumberCallback);
     };
 
     this.getLastAjaxRequest = function() {

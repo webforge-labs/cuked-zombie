@@ -7,6 +7,8 @@ module.exports = function(cucumberStep, options) {
 
   var runStep = function(step, cucumberScope, args, cucumberCallback) {
     try {
+      cucumberScope.setStepCallback(cucumberCallback);
+      
       return step.apply(cucumberScope, args);
 
     } catch (ex) {
