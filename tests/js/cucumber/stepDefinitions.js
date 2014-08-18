@@ -52,14 +52,26 @@ module.exports = function() {
     callback();
   });  
 
-  this.When(/^I execute the grunt cucumber task with filter "([^"]*)" in the root of the project$/, function(filter, callback) {
+  var parseFeatures = function(stdout) {
+    var features = [];
+
+    var re = /^Feature:\s*(.*?)$/gm, match;
+
+    while(match = re.exec(stdout)) {
+      features.push(match[1]);
+    }
+
+    return features;
+  };
+
+  var runCucumber = function(cmd, callback) {
     var env = this.env;
     var exec = require('child_process').exec;
     var grunt = require('grunt');
     var path = require('path');
     var os = require('os');
 
-    var task = exec('grunt cucumber --stack --no-color --filter '+filter, { cwd: this.env.project.dir }, function(error, stdout, stderr) {
+    var task = exec('grunt cucumber --stack --no-color '+cmd, { cwd: this.env.project.dir }, function(error, stdout, stderr) {
       expect(error, "grunt cucumber produces an error:\n"+stdout+stderr).to.be.null;
 
       env.cucumberRun = {
@@ -70,13 +82,25 @@ module.exports = function() {
 
     task.on('close', function (code) {
       env.cucumberRun.exitCode = code;
+      env.cucumberRun.features = parseFeatures(env.cucumberRun.stdout);
+
       callback();
     });
+  };
+
+  this.When(/^I execute the grunt cucumber task with tag "([^"]*)" in the root of the project$/, function(tagString, callback) {
+    runCucumber.call(this, '--tags '+tagString, callback);
   });
 
-  this.Then(/^cucumber has run the feature "([^"]*)" successfully$/, function(arg1, callback) {
-    expect(this, 'cucumberRun not exited correctly').to.have.deep.property('env.cucumberRun.exitCode', 0);
-    
+  this.When(/^I execute the grunt cucumber task with filter "([^"]*)" in the root of the project$/, function(filter, callback) {
+    runCucumber.call(this, '--filter '+filter, callback);
+  });
+
+  this.Then(/^cucumber has run the feature "([^"]*)" successfully$/, function(featureName, callback) {
+    expect(this).to.have.deep.property('env.cucumberRun');
+    var run = this.env.cucumberRun;
+    expect(run, 'cucumberRun not exited correctly').to.have.property('exitCode', 0);
+    expect(run, 'cucumberRun result did not match').to.have.property('features').and.to.be.eql([featureName]);
 
     callback();
   });

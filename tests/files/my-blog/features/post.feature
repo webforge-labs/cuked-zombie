@@ -3,6 +3,7 @@ Feature: post
   As a blog admin
   I need to write a post
 
+  @post
   Scenario: Writing a new post
     Given I am logged in as admin
     When I goto the "posts" admin page
