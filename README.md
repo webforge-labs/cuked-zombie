@@ -158,3 +158,36 @@ grunt cucumber --filter post
 ``` 
 
 to run just the `post.feature` and `post-admin.feature`.
+
+You can also filter the scanrios using @-tags. For example:
+
+```js
+  @post
+  Scenario: Writing a new post
+  ...
+
+  @delete
+  Scenario: Delete a post
+  ...
+
+  @post
+  Scenario: Rename a post
+  ...
+
+  Scenario: Edit a post
+  ...
+```
+
+Now you can run all scenarios with the selected tag(s). For example, you can use
+
+```
+grunt cucumber --tags @post
+```
+
+to run the 1st and the 3rd scenarios. Or
+
+```
+grunt cucumber --tags @post,@delete
+```
+
+to run the first three scenarios.
