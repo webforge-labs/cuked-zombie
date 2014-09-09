@@ -58,7 +58,7 @@ module.exports = function() {
   var cukedZombie = require('cuked-zombie');
 
   var infected = cukedZombie.infect(cucumberStep, {
-    world: worldOptions
+    world: require('../world-config'),
     steps: {
       dir: __dirname
     }
@@ -74,10 +74,10 @@ with this bootstrap config cuked-zombie will search for all files in `__dirname`
 
 #### infected world options
 
-Here are some examples for the worldOptions:
+Here are some examples for the world-config,js:
 
 ```js
-var worldOptions = {
+module.exports = {
   cli: // path to your symfony command line interface,
   domains: {
     // os.hostname(): domain
