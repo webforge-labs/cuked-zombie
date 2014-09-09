@@ -19,8 +19,8 @@ cuked-zombie bridges the small gap between this libraries. It provides an api to
 
 other features:
 
-  - a grunt task to run all or just single cucumber steps
-  - some convenient functions to manage different hosts your testing on
+  - a simple task to run all or just single cucumber steps, filter by expression and filter by tags
+  - some convenient functions to manage different hosts your testing environment runs on
 
 ## installation
 
@@ -29,12 +29,7 @@ other features:
 ```
 npm install cuked-zombie
 ```
-(this will install Zombie as well)
-
-```
-npm install grunt-cucumber
-```
-(this will install cucumber-js as well)
+(this will install Zombie and cucumber-js as well)
 
 ## Usage
 
@@ -116,52 +111,36 @@ You can paste the `this.Given/When/Then()` statements from the cucumber-js runne
 
 The easiest way is to run cucumber with the built in grunt task:
 
-Gruntfile.js
+adjust your Gruntfile.js accordingly:
 ```js
-  grunt.loadNpmTasks('grunt-cucumber');
   grunt.loadNpmTasks('cuked-zombie');
 
   grunt.initConfig({
-    cucumberjs: {
-      // config for all features when called with: `grunt cucumber`
-      all: {
-        src: 'features',
-        options: {
-          steps: "tests/js/cucumber/bootstrap.js",
-          format: "pretty"
-        }
-      },
-
-      // config for single features when called with `grunt --filter some-feature`
-      features: {
-        src: 'features',
-        options: {
-          steps: "tests/js/cucumber/bootstrap.js",
-          format: "pretty"
-        }
+    'cuked-zombie': {
+      options: {
+        features: 'features',
+        bootstrap: "tests/js/cucumber/bootstrap.js",
+        format: "pretty"
       }
     }
   });
 ```
 
-This needs [grunt-cucumber](https://github.com/s9tpepper/grunt-cucumber-js) installed, because cuked-zombie will use this task to run cucumber internally.
+The full configuration is optional. The values above are the defaults, so if they match for you, you don't have to call `grunt.initConfig`.
 
-use 
+to run all tests, use:
 ```
 grunt cucumber
 ``` 
 
-to run all tests or:
-
+to run just the `post.feature` and `post-admin.feature`, use: 
 ```
 grunt cucumber --filter post
 ``` 
 
-to run just the `post.feature` and `post-admin.feature`.
+to filter the scenarios using @-tags apply tags to your scenarios like this:
 
-You can also filter the scenarios using @-tags. For example:
-
-```js
+```gherkin
   @post
   Scenario: Writing a new post
   ...
