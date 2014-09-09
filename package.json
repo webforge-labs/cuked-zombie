@@ -11,6 +11,7 @@
     "lodash": "~2.4.1",
     "chai": "~1.9.1",
     "zombie": ">=2.0.0-alpha31",
+    "cucumber": "~0.4.2",
     "css-tester": "0.0.8",
     "stringify-object": "~0.2.1"
   },
@@ -18,12 +19,11 @@
     "matchdep": "~0.3.0",
     "grunt": "~0.4.5",
     "grunt-contrib-jshint": "~0.10.0",
-    "grunt-cucumber": "~0.2.3",
     "grunt-simple-mocha": "~0.4.0",
     "grunt-release": "~0.7.0"
   },
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt unittest && cucumber-js features -f pretty -r tests/js/cucumber/stepDefinitions.js"
   },
   "repository": {
     "type": "git",

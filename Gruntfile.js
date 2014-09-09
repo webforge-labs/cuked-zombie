@@ -2,7 +2,6 @@
 module.exports = function(grunt) {
 
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
-  grunt.loadTasks('tasks');
 
   grunt.initConfig({
     jshint: {
@@ -47,5 +46,6 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('test', ['jshint', 'simplemocha:all', 'cucumber']);
+  // these are only the unit tests. use npm test for the full testsuite!
+  grunt.registerTask('unittest', ['jshint', 'simplemocha:all']);
 };
