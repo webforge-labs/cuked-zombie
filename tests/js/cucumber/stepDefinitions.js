@@ -3,7 +3,6 @@
 module.exports = function() {
   var cucumberStep = this;
   var path = require('path');
-  var os = require('os');
   var _ = require('lodash');
   var glob = require('glob');
 
@@ -69,7 +68,6 @@ module.exports = function() {
     var exec = require('child_process').exec;
     var grunt = require('grunt');
     var path = require('path');
-    var os = require('os');
 
     var task = exec('grunt cucumber --stack --no-color '+cmd, { cwd: this.env.project.dir }, function(error, stdout, stderr) {
       expect(error, "grunt cucumber produces an error:\n"+stdout+stderr).to.be.null;
@@ -97,10 +95,16 @@ module.exports = function() {
   });
 
   this.Then(/^cucumber has run the feature "([^"]*)" successfully$/, function(featureName, callback) {
+    /* globals console:true */
     expect(this).to.have.deep.property('env.cucumberRun');
     var run = this.env.cucumberRun;
-    expect(run, 'cucumberRun not exited correctly').to.have.property('exitCode', 0);
-    expect(run, 'cucumberRun result did not match').to.have.property('features').and.to.be.eql([featureName]);
+    try {
+      expect(run, 'cucumberRun not exited correctly').to.have.property('exitCode', 0);
+      expect(run, 'cucumberRun result did not match').to.have.property('features').and.to.be.eql([featureName]);
+    } catch (assertion) {
+      console.log(run);
+      throw assertion;
+    }
 
     callback();
   });
