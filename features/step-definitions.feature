@@ -1,5 +1,5 @@
 Feature: step-definitions
-  In order to have distributed step step-definitions
+  In order to have distributed step-definitions
   as a developer
   I can use cuked zombie to help me
 
