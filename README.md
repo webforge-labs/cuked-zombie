@@ -170,3 +170,9 @@ grunt cucumber --tags @post,@delete
 ```
 
 to run the first three scenarios.
+
+## Migration to 1.2.x from 1.0.x and 1.1.x
+
+ - uninstall the `grunt-cucumber` task from your package.json
+ - remove the `cucumberjs: { ... }` section from your Gruntfile
+ - if your features are not in the directory `features` next to the `Gruntfile.js` or your `bootstrap.js` is not in `tests\js\cucumber` adjust the config-section `cuked-zombie` in your Gruntfile like explained above
