@@ -88,6 +88,10 @@ module.exports = function(options) {
         } else
         */
         if (error) {
+          if (error.toString().search('/Server returned status code 500/')) {
+            that.debug.log(that.browser.html());
+          }
+
           if (cucumberCallback) {
             cucumberCallback.fail(error);
           } else if (that.cucumberCallback) {
