@@ -9,12 +9,16 @@ module.exports = function(grunt) {
     var tags = grunt.option('tags');
     
     var config = grunt.config.get('cuked-zombie') || {};
+
     var options = _.merge({
         features: 'features',
         bootstrap: "tests/js/cucumber/bootstrap.js",
         format: "pretty"
       }, 
-      config.options || {}
+      config.options || {},
+      {
+        format: grunt.option('format')
+      }
     );
 
     var cucumberOptions = {
