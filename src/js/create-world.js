@@ -212,7 +212,7 @@ module.exports = function(options) {
 
       execFile(options.cli, ["db:dql", "--base64", dql, encodedParameters], function(error, stdout, stderr) {
         if (error) {
-          console.log(stderr, stdout);
+          that.debug.log(stderr, stdout);
           expect(error).to.be.undefined;
         }
 
