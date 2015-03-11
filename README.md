@@ -171,6 +171,33 @@ grunt cucumber --tags @post,@delete
 
 to run the first three scenarios.
 
+## Debugging
+
+Often its REALLY difficult to see what zombie is doing. Starting with version 2.0.x cuked-zombie has now a better fine-grained debug possibility.  
+Use node debug for this:
+
+```
+DEBUG=* grunt cucumber
+```
+
+windows:
+```
+set DEBUG=*
+grunt cucumber
+```
+
+You can use debug like this: `DEBUG=*,-fixtures` this will include all debug messages except for fixtures
+
+ - `fixtures`: the output from cuked zombie, when fixtures are loaded (with symfony bridge)
+ - `cuked-zombie`: internals from cuked zombie
+ - `zombie`: all messages from zombie (event loop, etc)
+ - `requests`: shows all http resonses and http requests that zombie does during a test (very useful for debugging ajax)
+
+
+## Migration to 2.0.0 from 1.2.x
+ - read the changelog for zombie 3.x.x from zombie 2.0.x-alpha
+ - use the new troubleshooting debug-mode for cuked zombie
+
 ## Migration to 1.2.x from 1.0.x and 1.1.x
 
  - uninstall the `grunt-cucumber` task from your package.json

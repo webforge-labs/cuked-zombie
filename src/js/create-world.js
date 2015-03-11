@@ -36,11 +36,14 @@ module.exports = function(options) {
       this.init.call(this, Browser);
     }
 
-    this.debug = {};
-    this.debug.log = function() {
-      /* globals console */
-      (console.log).apply(this, arguments);
+    var stringifyObject = require('stringify-object');
+    var stringifyPretty = function(object) {
+      return stringifyObject(object, { indent: '  '});
     };
+
+    this.debug = {};
+    this.debug.log = this.debug.cukedZombie = require('debug')('cuked-zombie');
+    this.debug.requests = require('debug')('requests');
 
     var browserOptions = _.defaults(options.browser, {
       site: 'http://'+options.domain,
@@ -51,19 +54,16 @@ module.exports = function(options) {
       waitDuration: 7000
     });
 
-    if (options.debug) {
-      that.debug.log('browserOptions:', browserOptions);
-    }
+    this.debug.cukedZombie('browserOptions:', browserOptions);
 
     this.browser = new Browser(browserOptions);
 
-    var debug = require('debug')('requests');
     var fixturesDebug = require('debug')('fixtures');
 
     if (options.debug) {
-      this.browser.on("response", function(request, response) {
-        debug(request);
-        debug(response);
+      this.browser.on("response", function(request, response) {        
+        that.debug.requests(stringifyPretty(request));
+        that.debug.requests(stringifyPretty(response));
       });
     }
 
