@@ -57,6 +57,16 @@ module.exports = function(options) {
 
     this.browser = new Browser(browserOptions);
 
+    var debug = require('debug')('requests');
+    var fixturesDebug = require('debug')('fixtures');
+
+    if (options.debug) {
+      this.browser.on("response", function(request, response) {
+        debug(request);
+        debug(response);
+      });
+    }
+
     this.browser.on("opened", function(window) {
       // make Raphael run in zombie without quitting silently
       window.SVGAngle = {};
@@ -269,22 +279,20 @@ module.exports = function(options) {
     };
 
     this.loadFixtureParts = function(partsText, callback) {
-      if (options.debug) {
-        that.debug.log('loading fixture-parts:');
-        that.debug.log(partsText);
-      }
+      fixturesDebug('loading fixture-parts:');
+      fixturesDebug(partsText);
 
       partsText = partsText.replace(/\r?\n/g, '_');
 
       execFile(options.cli, ["db:fixture-parts", partsText, '--divider=_'], function(error, stdout, stderr) {
         if (error) {
-          that.debug.log(stderr, stdout);
+          fixturesDebug(stderr, stdout);
           throw error;
         }
 
         if (options.debug) {
-          that.debug.log('fixture parts debug:');
-          that.debug.log(stdout);
+          fixturesDebug('fixture parts debug:');
+          fixturesDebug(stdout);
         }
 
         callback.call(that);

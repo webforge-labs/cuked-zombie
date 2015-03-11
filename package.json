@@ -7,13 +7,14 @@
     "test": "tests"
   },
   "dependencies": {
+    "chai": "~1.9.1",
+    "css-tester": "0.0.8",
+    "cucumber": "~0.4.2",
+    "debug": "^2.1.2",
     "glob": "~4.0.0",
     "lodash": "~2.4.1",
-    "chai": "~1.9.1",
-    "zombie": "3.0.14-0",
-    "cucumber": "~0.4.2",
-    "css-tester": "0.0.8",
-    "stringify-object": "~0.2.1"
+    "stringify-object": "~0.2.1",
+    "zombie": "^3.0.14-0"
   },
   "devDependencies": {
     "matchdep": "~0.3.0",
