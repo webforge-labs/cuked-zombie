@@ -36,11 +36,6 @@ module.exports = function(options) {
       this.init.call(this, Browser);
     }
 
-    var stringifyObject = require('stringify-object');
-    var stringifyPretty = function(object) {
-      return stringifyObject(object, { indent: '  '});
-    };
-
     this.debug = {};
     this.debug.log = this.debug.cukedZombie = require('debug')('cuked-zombie');
     this.debug.requests = require('debug')('requests');
@@ -61,9 +56,12 @@ module.exports = function(options) {
     var fixturesDebug = require('debug')('fixtures');
 
     if (options.debug) {
-      this.browser.on("response", function(request, response) {        
-        that.debug.requests(stringifyPretty(request));
-        that.debug.requests(stringifyPretty(response));
+      this.browser.on("response", function(request, response) {
+        request.body = request.body ? request.body.toString() : undefined;
+        response.body = response.body ? response.body.toString() : undefined;
+
+        that.debug.requests(request);
+        that.debug.requests(response);
       });
     }
 
