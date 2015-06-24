@@ -55,15 +55,6 @@ module.exports = function(options) {
 
     var fixturesDebug = require('debug')('fixtures');
 
-    if (options.debug) {
-      this.browser.on("response", function(request, response) {
-        request.body = request.body ? request.body.toString() : undefined;
-        response.body = response.body ? response.body.toString() : undefined;
-
-        that.debug.requests(request);
-        that.debug.requests(response);
-      });
-    }
 
     this.browser.on("opened", function(window) {
       // make Raphael run in zombie without quitting silently
