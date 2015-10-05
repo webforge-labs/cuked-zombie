@@ -193,6 +193,36 @@ You can use debug like this: `DEBUG=*,-fixtures` this will include all debug mes
  - `zombie`: all messages from zombie (event loop, etc)
  - `requests`: shows all http resonses and http requests that zombie does during a test (very useful for debugging ajax)
 
+## advanced configuration
+
+You can hook into the infected World on creation like this:
+
+```js
+var infected = cukedZombie.infect(cucumberStep, {
+  ...
+});
+
+infected.World.prototype.init = function(Browser) {
+  Browser.dns.localhost('my.local.domain.ip');
+  
+  Browser.extend(function(browser) {
+    // browser is an instance of zombie
+    browser.on('authenticate', function(authentication) {
+      authentication.username = 'tvs';
+      authentication.password = '1891';
+    });
+  });
+
+  // add properties to the available for all steps
+  // this refers here the same this, bound to a cucumber step
+  this.filled = {}; 
+  
+  this.myStepHelper = function() {
+    // ...
+  };
+};
+```
+
 
 ## Migration to 2.0.0 from 1.2.x
  - read the changelog for zombie 3.x.x from zombie 2.0.x-alpha
