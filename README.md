@@ -198,21 +198,20 @@ You can use debug like this: `DEBUG=*,-fixtures` this will include all debug mes
 You can hook into the infected World on creation like this:
 
 ```js
+var cukedZombie = require('cuked-zombie');
 var infected = cukedZombie.infect(cucumberStep, {
   ...
 });
 
-infected.World.prototype.init = function(Browser) {
-  Browser.dns.localhost('my.local.domain.ip');
-  
-  Browser.extend(function(browser) {
-    // browser is an instance of zombie
-    browser.on('authenticate', function(authentication) {
-      authentication.username = 'tvs';
-      authentication.password = '1891';
-    });
+var Browser = cukedZombie.Zombie;
+Browser.extend(function(browser) {
+  browser.on('authenticate', function(authentication) {
+    authentication.username = 'myUser';
+    authentication.password = 'myPw';
   });
+});
 
+infected.World.prototype.init = function(Browser) {
   // add properties to the available for all steps
   // this refers here the same this, bound to a cucumber step
   this.filled = {}; 
