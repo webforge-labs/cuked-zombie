@@ -4,6 +4,7 @@ var createWorld = require("./src/js/create-world");
 var that = {
 
   Zombie: require('zombie'),
+  chai: require('chai'),
 
   infect: function(cucumberStep, options) {
     var infected = {};
@@ -58,7 +59,9 @@ var that = {
    */
   infectWorld: function(cucumberStep, options) {
     return cucumberStep.World = createWorld(options);
-  }
+  },
+
+  runCucumber: require("./src/js/run-cucumber")
 };
 
 module.exports = that;
