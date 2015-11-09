@@ -224,7 +224,7 @@ infected.World.prototype.init = function(Browser) {
 
 ## simplifying step definitions
 
-Image you have several css selectors, that need to be used in more than one step. I would be a code smell to copy and paste them. So lets write some helper functions.
+Imagine you have several css selectors, that need to be used in more than one step. I would be a code smell to copy and paste them. So lets write some helper functions.  
 You can use `this.fn` in an infected step to inject functions in to your steps. You have the same scope as in the step for those helpers.
 
 Lets assume your code in an infected step looks like this:
