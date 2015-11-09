@@ -266,7 +266,8 @@ module.exports = function(expect) {
     this.util.clickLink(tab.css('a').get(), callback);
   });
 ```
-
+## Migration to 2.1.0 from 2.0.x
+ - you need node 4.x.x to run cuked-zombie (especially zombiejs)
 
 ## Migration to 2.0.0 from 1.2.x
  - read the changelog for zombie 3.x.x from zombie 2.0.x-alpha
