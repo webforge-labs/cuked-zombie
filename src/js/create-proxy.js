@@ -21,14 +21,19 @@ module.exports = function(cucumberStep, options) {
 
   var proxy = {};
   var proxyStep = function(stepName) {
+
     return function(regexp, step) {
       var stepString = step.toString().replace(/[\r\n]*/, ''); // ignore multiline arguments
-      var withCSS = stepString.match(/^\s*function\s*\((.*?)withCSS\s*\)/); 
+      var withCSS = stepString.match(/^\s*function\s*\((.*?)withCSS\s*\)/);
+
+      var funcs = this.fn;
 
       cucumberStep[stepName].call(this, regexp, function() { // e.g: that.Then(regexp, function() {
         var args = Array.prototype.slice.call(arguments, 0);
         var cucumberCallback = args[args.length - 1];
         var cucumberScope = this;
+
+        _.assign(cucumberScope, funcs);
 
         if (withCSS) {
           cucumberScope.waitForjQuery(function(jQuery) {
@@ -45,6 +50,8 @@ module.exports = function(cucumberStep, options) {
   proxy.Given = proxyStep('Given');
   proxy.When = proxyStep('When');
   proxy.Then = proxyStep('Then');
+
+  proxy.fn = {};
 
   return proxy;
 };

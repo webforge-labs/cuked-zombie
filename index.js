@@ -25,14 +25,14 @@ var that = {
 
     _.each(glob.sync('*step-definitions.js', { cwd: options.dir }), function(file) {
       var absoluteFile = path.resolve(options.dir, file);
-      var step = require(absoluteFile);
+      var stepDefinitions = require(absoluteFile);
 
-      if (typeof(step) !== 'function') {
+      if (typeof(stepDefinitions) !== 'function') {
         throw new Error(file+' does not export a function when required.');
       }
 
       steps.push(
-        that.infectStep(cucumberStep, step, options)
+        that.infectStep(cucumberStep, stepDefinitions, options)
       );
     });
 
@@ -42,14 +42,14 @@ var that = {
   /**
    * Infects the cucumberStep with the step definitions from `step`
    */
-  infectStep: function(cucumberStep, step, options) {
+  infectStep: function(cucumberStep, stepDefinitions, options) {
     var proxy = createProxy(cucumberStep, options);
 
-    if (typeof(step) !== 'function') {
+    if (typeof(stepDefinitions) !== 'function') {
       throw new Error(' parameter #2 has to be a step function to infect');
     }
 
-    return step.apply(proxy, options.arguments || []);
+    return stepDefinitions.apply(proxy, options.arguments || []);
   },
 
   /**

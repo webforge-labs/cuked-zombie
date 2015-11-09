@@ -2,6 +2,10 @@
 
 This reports only the really major changes in versions
 
+## 2.1.0
+  - using zombie >= 4.2.1 for that release
+  - added `this.fn` support for helpers in step definitions
+
 ## 2.0.1
 
   - using zombie 3.0.x for that release (includes jsdom 3.x.x)

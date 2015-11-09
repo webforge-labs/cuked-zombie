@@ -222,6 +222,51 @@ infected.World.prototype.init = function(Browser) {
 };
 ```
 
+## simplifying step definitions
+
+Image you have several css selectors, that need to be used in more than one step. I would be a code smell to copy and paste them. So lets write some helper functions.
+You can use `this.fn` in an infected step to inject functions in to your steps. You have the same scope as in the step for those helpers.
+
+Lets assume your code in an infected step looks like this:
+```js
+module.exports = function(expect) {
+
+  this.Then(/^a tab with title "([^"]*)" is added$/, function (label, callback) {
+    var tab = this.css('ul.nav-tabs:first').exists()
+      .css('li:contains("'+label+'")').exists();
+    callback();
+  });
+
+  this.When(/^I (activate|select) the tab "([^"]*)"$/, function (nulll, label, callback) {
+    // copy and paste from above
+    var tab = this.css('ul.nav-tabs:first').exists()
+      .css('li:contains("'+label+'")').exists();
+
+    this.util.clickLink(tab.css('a').get(), callback);
+  });
+```   
+
+After refactoring it should look like this:
+```js
+module.exports = function(expect) {
+
+  this.fn.findTab = function(label) {
+    return this.css('ul.nav-tabs:first').exists()
+      .css('li:contains("'+label+'")').exists();
+  };
+
+  this.Then(/^a tab with title "([^"]*)" is added$/, function (label, callback) {
+    this.findTab(label);
+    callback();
+  });
+
+  this.When(/^I (activate|select) the tab "([^"]*)"$/, function (nulll, label, callback) {
+    var tab = this.findTab(label);
+
+    this.util.clickLink(tab.css('a').get(), callback);
+  });
+```
+
 
 ## Migration to 2.0.0 from 1.2.x
  - read the changelog for zombie 3.x.x from zombie 2.0.x-alpha
