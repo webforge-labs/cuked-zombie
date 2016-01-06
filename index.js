@@ -23,17 +23,29 @@ var that = {
 
     var steps = [];
 
-    _.each(glob.sync('*step-definitions.js', { cwd: options.dir }), function(file) {
-      var absoluteFile = path.resolve(options.dir, file);
-      var stepDefinitions = require(absoluteFile);
+    var directories = [];
 
-      if (typeof(stepDefinitions) !== 'function') {
-        throw new Error(file+' does not export a function when required.');
-      }
+    if (options.dir) {
+      directories.push(options.dir);
+    }
 
-      steps.push(
-        that.infectStep(cucumberStep, stepDefinitions, options)
-      );
+    if (options.directories) {
+      directories = directories.concat(options.directories);
+    }
+
+    _.each(directories, function(dir) {
+      _.each(glob.sync('*step-definitions.js', { cwd: dir }), function(file) {
+        var absoluteFile = path.resolve(dir, file);
+        var stepDefinitions = require(absoluteFile);
+
+        if (typeof(stepDefinitions) !== 'function') {
+          throw new Error(file+' does not export a function when required.');
+        }
+
+        steps.push(
+          that.infectStep(cucumberStep, stepDefinitions, options)
+        );
+      });
     });
 
     return steps;
