@@ -22,7 +22,7 @@ module.exports = function(options) {
     throw new Error('you have to provide a (base-)domain for the world. No key "'+options.hostname+'" found for a domain in '+require('stringify-object')(options.domains, { indent: '  '}));
   }
 
-  return function World(callback) {
+  return function World() {
     var that = this;
 
     this.cucumberCallback = undefined;
@@ -92,9 +92,9 @@ module.exports = function(options) {
           }
 
           if (cucumberCallback) {
-            cucumberCallback.fail(error);
+            cucumberCallback(error);
           } else if (that.cucumberCallback) {
-            that.cucumberCallback.fail(error);
+            that.cucumberCallback(error);
           } else {
             throw error;
           }
@@ -213,7 +213,7 @@ module.exports = function(options) {
 
             cucumberCallback();
           } catch (exc) {
-            cucumberCallback.fail(exc);
+            cucumberCallback(exc);
           }
         } else {
           callback.call(that, result, dql);
@@ -237,7 +237,7 @@ module.exports = function(options) {
 
             cucumberCallback();
           } catch (exc) {
-            cucumberCallback.fail(exc);
+            cucumberCallback(exc);
           }
         } else {
           callback.call(that, result);
@@ -297,13 +297,11 @@ module.exports = function(options) {
       execFile(options.cli, parameters, function(error, stdout, stderr) {
         if (error) {
           that.debug.log(stderr, stdout);
-          throw error;
+          error += "\nstdout: \n"+stdout;
         }
 
-        callback.call(that, stdout, stderr);
+        callback.call(that, error, stdout, stderr);
       });
     };
-
-    callback(); // tell Cucumber we're finished and to use 'this' as the world instance
   };
 };

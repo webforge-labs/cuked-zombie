@@ -1,55 +1,64 @@
 var _ = require('lodash');
 
-module.exports = function(cucumberStep, options) {
-  options = _.defaults(options, {
-    stackLength: 14
-  });
+module.exports = function(cucumberStep) {
 
   var runStep = function(step, cucumberScope, args, cucumberCallback) {
-    try {
-      cucumberScope.setStepCallback(cucumberCallback);
-      
-      return step.apply(cucumberScope, args);
+    cucumberScope.setStepCallback(cucumberCallback);
 
-    } catch (ex) {
-      // to make the output better (from zombie) we short the stack  here
-      ex.stack = ex.stack.split("\n").slice(0, options.stackLength).join("\n") + "\n (stack was shortened by cuked-zombie)";
-
-      cucumberCallback.fail(ex); // catch every exception (the one from chai and the ones from zombie and convert to failure)
-    }
+    return step.apply(cucumberScope, args);
   };
 
   var proxy = {};
-  var proxyStep = function(stepName) {
 
-    return function(regexp, step) {
-      var stepString = step.toString().replace(/[\r\n]*/, ''); // ignore multiline arguments
-      var withCSS = stepString.match(/^\s*function\s*\((.*?)withCSS\s*\)/);
+  var proxyStep = function(keyword) {
+    // lets create a proxy/curry that calls the original cucumber step with some additional arguments or properties
+
+    return function(regexp, options, originalStep) {
+      if (_.isFunction(options)) {
+        originalStep = options;
+        options = {};
+      }
+
+      if (!options.hasOwnProperty('withCSS')) {
+        options.withCSS = false;
+      }
 
       var funcs = this.fn;
 
-      cucumberStep[stepName].call(this, regexp, function() { // e.g: that.Then(regexp, function() {
+      var stepCurry = function() { 
         var args = Array.prototype.slice.call(arguments, 0);
         var cucumberCallback = args[args.length - 1];
         var cucumberScope = this;
 
+        // assign functions from stepDefinitions.fn directly to the scope
         _.assign(cucumberScope, funcs);
 
-        if (withCSS) {
+        if (options.withCSS) {
           cucumberScope.waitForjQuery(function(jQuery) {
-            return runStep(step, cucumberScope, args, cucumberCallback);
+            return runStep(originalStep, cucumberScope, args, cucumberCallback);
           });
 
         } else {
-          return runStep(step, cucumberScope, args, cucumberCallback);
+          return runStep(originalStep, cucumberScope, args, cucumberCallback);
         }
-      });
+      };
+
+      // we fake cucumber that our dynamic arguments function has the right arguments length
+      Object.defineProperty(stepCurry, 'length', {get: function() {
+        return originalStep.length;
+      }});
+
+      // e.g: that.Then(regexp, stepCode = function() {
+      cucumberStep[keyword].call(this, regexp, options, stepCurry);
     };
   };
 
   proxy.Given = proxyStep('Given');
   proxy.When = proxyStep('When');
   proxy.Then = proxyStep('Then');
+
+  proxy.Before = cucumberStep.Before;
+  proxy.After = cucumberStep.After;
 
   proxy.fn = {};
 

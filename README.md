@@ -266,8 +266,19 @@ module.exports = function(expect) {
     this.util.clickLink(tab.css('a').get(), callback);
   });
 ```
+
+## Migration to 3.0.0 from 2.1.x
+ - runs on cucumber-js 0.9 which has a lot of changes
+ - see changelog of cucumber-js from 0.3 til 0.9 and:
+   - you can return promises instead of the callback
+   - dont use withCSS-flag anymore use `function(regexp, { withCSS: true}, function(arg1, arg2)) instead`
+   - the callback.fail() isnt available anymore. If you call callback with first parameter its the error thrown.
+ - `this.Before` and `this.After` are now available in step definitions
+ - you can pass timeout with the options object (2nd parameter of your step)
+
 ## Migration to 2.1.0 from 2.0.x
- - you need node 4.x.x to run cuked-zombie (especially zombiejs)
+ - you need node 4.x.x to run cuked-zombie (especially for zombiejs)
+ - you can use `this.fn` to extend own functions
 
 ## Migration to 2.0.0 from 1.2.x
  - read the changelog for zombie 3.x.x from zombie 2.0.x-alpha
