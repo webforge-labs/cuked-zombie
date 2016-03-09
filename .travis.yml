@@ -5,6 +5,7 @@ sudo: false
 node_js:
   - "4.0"
   - "4.1"
+  - "5.0"
 
 branches:
   only:

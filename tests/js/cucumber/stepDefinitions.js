@@ -42,7 +42,6 @@ module.exports = function() {
 
   this.Given(/^I have installed cuked\-zombie with npm$/, function(callback) {
     expect(this.env.project.getDirectory('node_modules/cuked-zombie')).to.be.an.existingDirectory;
-    expect(this.env.project.getDirectory('node_modules/grunt-cucumber')).to.be.an.existingDirectory;
 
     callback();
   });  
