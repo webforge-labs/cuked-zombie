@@ -9,11 +9,11 @@ Feature: step-definitions
     And I have created my step-definition bootstrap by hand
 
   Scenario: Running distributed step definitions with grunt
-    When I execute the grunt cucumber task with filter "post" in the root of the project
+    When I execute cucumber with filter "post" in the root of the project
     Then cucumber has run the feature "post" successfully
     And all cucumber tests are passed
 
   Scenario: Running with tags option
-    When I execute the grunt cucumber task with tag "@post" in the root of the project
+    When I execute cucumber with tag "@post" in the root of the project
     Then cucumber has run the feature "post" successfully
     And all cucumber tests are passed

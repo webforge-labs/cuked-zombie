@@ -4,19 +4,15 @@ module.exports = function() {
   var cucumberStep = this;
   var path = require('path');
   var _ = require('lodash');
-  var glob = require('glob');
 
   var chai = require('chai');
   chai.config.includeStack = true;
   chai.use(require('./chai-file-and-directory'));
   var expect = chai.expect;
 
-  this.World = function(callback) {
+  this.World = function() {
     this.env = {};
-
-    callback();
   };
-  
 
   this.Given(/^I am using the project "([^"]*)"$/, function(name, callback) {
     var path = require('path');
@@ -66,15 +62,14 @@ module.exports = function() {
   var runCucumber = function(cmd, callback) {
     var env = this.env;
     var exec = require('child_process').exec;
-    var grunt = require('grunt');
     var path = require('path');
 
-    var task = exec('grunt cucumber --stack --no-color '+cmd, { cwd: this.env.project.dir }, function(error, stdout, stderr) {
-      expect(error, "grunt cucumber produces an error:\n"+stdout+stderr).to.be.null;
+    var task = exec('cucumber-js  --no-colors --format=pretty -r tests/js/cucumber/bootstrap.js '+cmd, { cwd: this.env.project.dir }, function(error, stdout, stderr) {
+      expect(error, "cucumber produces an error:\n"+stdout+stderr).to.be.null;
 
       env.cucumberRun = {
         stderr: stderr,
-        stdout: stdout.replace(/\033\[[0-9;]*m/g, '') // strip ansi until cucumber has a --no-color switch
+        stdout: stdout
       };
     });
 
@@ -86,12 +81,12 @@ module.exports = function() {
     });
   };
 
-  this.When(/^I execute the grunt cucumber task with tag "([^"]*)" in the root of the project$/, function(tagString, callback) {
+  this.When(/^I execute cucumber with tag "([^"]*)" in the root of the project$/, function(tagString, callback) {
     runCucumber.call(this, '--tags '+tagString, callback);
   });
 
-  this.When(/^I execute the grunt cucumber task with filter "([^"]*)" in the root of the project$/, function(filter, callback) {
-    runCucumber.call(this, '--filter '+filter, callback);
+  this.When(/^I execute cucumber with filter "([^"]*)" in the root of the project$/, function(filter, callback) {
+    runCucumber.call(this, 'features/'+filter+'.feature', callback);
   });
 
   this.Then(/^cucumber has run the feature "([^"]*)" successfully$/, function(featureName, callback) {

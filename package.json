@@ -9,7 +9,7 @@
   "dependencies": {
     "chai": "~1.9.1",
     "css-tester": "0.0.8",
-    "cucumber": "~0.5.3",
+    "cucumber": "~0.9.5",
     "debug": "^2.1.2",
     "glob": "~4.0.0",
     "lodash": "~2.4.1",
@@ -35,8 +35,7 @@
   },
   "keywords": [
     "cucumber",
-    "zombie",
-    "grunt"
+    "zombie"
   ],
   "author": "Philipp Scheit <p.scheit@ps-webforge.com>",
   "license": "MIT",

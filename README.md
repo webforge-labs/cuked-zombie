@@ -37,7 +37,7 @@ To use cucumber with zombie you need to infect your step definitions and create 
 
 1. create a step definitions bootstrap and use it as the only stepDefinition in cucumber
 2. create your infected steps (they are compatible to native cucumber steps)
-3. run cucumber with the bootstrap or use the internal task `grunt cucumber`
+3. run cucumber with the bootstrap
 
 *For this example* it is assumed that your features are stored in `features/something.feature`. Your infected step definitions should be stored in files grouped by domain in: `tests/js/cucumber/domain-step-definitions.js`. For example: `tests/js/cucumber/database-step-definitions.js` includes all steps dealing with database stuff. Have a look at [tests/files/my-blog](https://github.com/webforge-labs/cuked-zombie/blob/master/tests/files/my-blog) for a full, working structure.
 
@@ -109,33 +109,21 @@ You can paste the `this.Given/When/Then()` statements from the cucumber-js runne
 
 ### 3. running cucumber
 
-The easiest way is to run cucumber with the built in grunt task:
+Run cucumber-js with its own command runner. 
 
-adjust your Gruntfile.js accordingly:
-```js
-  grunt.loadNpmTasks('cuked-zombie');
-
-  grunt.initConfig({
-    'cuked-zombie': {
-      options: {
-        features: 'features',
-        bootstrap: "tests/js/cucumber/bootstrap.js",
-        format: "pretty"
-      }
-    }
-  });
 ```
-
-The full configuration is optional. The values above are the defaults, so if they match for you, you don't have to call `grunt.initConfig`.
+cucumber-js --format=pretty -r tests/js/cucumber/bootstrap.js
+```
+we just provide the -r (step definitions options) with our own bootstrap.js
 
 to run all tests, use:
 ```
-grunt cucumber
+cucumber-js --format=pretty -r tests/js/cucumber/bootstrap.js
 ``` 
 
 to run just the `post.feature` and `post-admin.feature`, use: 
 ```
-grunt cucumber --filter post
+cucumber-js features/post.feature features/post-admin.feature --format=pretty -r tests/js/cucumber/bootstrap.js
 ``` 
 
 to filter the scenarios using @-tags apply tags to your scenarios like this:
@@ -160,16 +148,14 @@ to filter the scenarios using @-tags apply tags to your scenarios like this:
 Now you can run scenarios with the selected tag(s). For example, you can use
 
 ```
-grunt cucumber --tags @post
+cucumber-js --tags="@post" --format=pretty -r tests/js/cucumber/bootstrap.js
 ```
 
-to run the 1st and the 3rd scenarios. Or
+and so forth. Have a look a the cucumber-js command line runner for more options:
 
 ```
-grunt cucumber --tags @post,@delete
+cucumber-js --help
 ```
-
-to run the first three scenarios.
 
 ## Debugging
 
@@ -177,13 +163,13 @@ Often its REALLY difficult to see what zombie is doing. Starting with version 2.
 Use node debug for this:
 
 ```
-DEBUG=* grunt cucumber
+DEBUG=* cucumber-js --format=pretty -r tests/js/cucumber/bootstrap.js
 ```
 
 windows:
 ```
 set DEBUG=*
-grunt cucumber
+cucumber-js --format=pretty -r tests/js/cucumber/bootstrap.js
 ```
 
 You can use debug like this: `DEBUG=*,-fixtures` this will include all debug messages except for fixtures
@@ -203,15 +189,14 @@ var infected = cukedZombie.infect(cucumberStep, {
   ...
 });
 
-var Browser = cukedZombie.Zombie;
-Browser.extend(function(browser) {
-  browser.on('authenticate', function(authentication) {
-    authentication.username = 'myUser';
-    authentication.password = 'myPw';
-  });
-});
-
 infected.World.prototype.init = function(Browser) {
+  Browser.extend(function(browser) {
+    browser.on('authenticate', function(authentication) {
+      authentication.username = 'myUser';
+      authentication.password = 'myPw';
+    });
+  });
+
   // add properties to the available for all steps
   // this refers here the same this, bound to a cucumber step
   this.filled = {}; 
@@ -221,7 +206,6 @@ infected.World.prototype.init = function(Browser) {
   };
 };
 ```
-
 ## simplifying step definitions
 
 Imagine you have several css selectors, that need to be used in more than one step. I would be a code smell to copy and paste them. So lets write some helper functions.  
@@ -269,12 +253,28 @@ module.exports = function(expect) {
 
 ## Migration to 3.0.0 from 2.1.x
  - runs on cucumber-js 0.9 which has a lot of changes
+ - dont run with grunt anymore use cucumber-js natively
  - see changelog of cucumber-js from 0.3 til 0.9 and:
    - you can return promises instead of the callback
    - dont use withCSS-flag anymore use `function(regexp, { withCSS: true}, function(arg1, arg2)) instead`
    - the callback.fail() isnt available anymore. If you call callback with first parameter its the error thrown.
  - `this.Before` and `this.After` are now available in step definitions
  - you can pass timeout with the options object (2nd parameter of your step)
+
+instead of:
+```js
+infected.World = function(callback) {
+  this.env = {};
+
+  callback();
+};
+```
+
+```js
+infected.World.prototype.init = function(Browser) {
+  this.env = {};
+};
+```
 
 ## Migration to 2.1.0 from 2.0.x
  - you need node 4.x.x to run cuked-zombie (especially for zombiejs)

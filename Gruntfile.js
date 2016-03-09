@@ -13,26 +13,6 @@ module.exports = function(grunt) {
       }
     },
 
-    cucumberjs: {
-      // config for all features when called with: `grunt cucumber`
-      all: {
-        src: 'features',
-        options: {
-          steps: "tests/js/cucumber/stepDefinitions.js", // .js is important otherwise cucumber will expand (what we don't want)
-          format: "pretty"
-        }
-      },
-
-      // config for single features when called with `grunt --filter some-feature`
-      features: {
-        src: 'features',
-        options: {
-          steps: "tests/js/cucumber/stepDefinitions.js", // .js is important otherwise cucumber will expand (what we don't want)
-          format: "pretty"
-        }
-      }
-    },
-
     simplemocha: {
       options: {
         timeout: 3000,

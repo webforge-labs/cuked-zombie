@@ -7,13 +7,11 @@
     "test": "tests"
   },
   "devDependencies": {
-    "cuked-zombie": "*",
-    "matchdep": "~0.3.0",
-    "grunt-cucumber": "~0.2.3"
+    "cuked-zombie": "*"
   },
   "public": false,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "cucumber-js --format=pretty -r tests/js/cucumber/bootstrap.js"
   },
   "author": "",
   "license": "MIT"
